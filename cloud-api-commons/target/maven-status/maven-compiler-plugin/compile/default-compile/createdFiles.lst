@@ -1,0 +1,8 @@
+com\cl\springcloud\pojo\vo\CommonResult.class
+com\cl\springcloud\unified\code\StatusCode.class
+com\cl\springcloud\unified\ValidatedExceptionAdvice.class
+com\cl\springcloud\pojo\po\Payment.class
+com\cl\springcloud\unified\code\ResultCode.class
+com\cl\springcloud\unified\vo\CreateLongTermTaskDetailsinfoVO.class
+com\cl\springcloud\unified\vo\TestVO.class
+com\cl\springcloud\unified\result\CommonResultVO.class

@@ -1,0 +1,13 @@
+server:
+  port: 80
+
+spring:
+  application:
+    name: cloud-consumer-order
+  cloud:
+    zookeeper: #zookeeper服务器地址，这里是我自己的linux服务器
+      connect-string: 192.168.31.22:2181
+
+
+
+
