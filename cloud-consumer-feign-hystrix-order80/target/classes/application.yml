@@ -1,0 +1,39 @@
+server:
+  port: 80
+
+spring:
+  application:
+    name: cloud-order-feign-hystrix-service
+
+
+eureka:
+  client:
+    #表示是否将自己注册进EurekaServer，默认为true
+    register-with-eureka: false
+    #是否从EurekaServer抓取已有的注册消息，默认为true，单节点无所谓,集群必须设置true才能配合ribbon使用负载均衡
+    fetchRegistry: true
+    #设置与eureka server交互的地址查询服务和注册服务都需要依赖这个地址
+    service-url:
+      defaultZone: http://localhost:7001/eureka  #单机版
+      #defaultZone: http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka #集群版
+
+#设置feign客户端超时时间(openFeign默认支持ribbon)
+ribbon:
+  #指建立连接后从服务端读取到可用资源所用的时间
+  ReadTimeout: 5000 #5s
+  #建立连接所用的时间，适用于网络状况正常的情况下，两端连接所需要的时间
+  ConnectTimeout: 5000 #5s
+
+
+#在feign中开启hystrix
+feign:
+  hystrix:
+    enabled: true #如果处理自身的容错就开启。开启方式与生产端不一样。
+
+#已经配置过ribbon的超时时间了就以ribbon的超时时间为准，所以禁用hystrix自带1s时间（ribbonhe和hystrix的超时时间是谁值小就执行谁）
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: false

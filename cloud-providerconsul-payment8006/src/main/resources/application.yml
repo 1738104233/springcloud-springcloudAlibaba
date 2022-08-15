@@ -1,0 +1,13 @@
+server:
+  port: 8006
+
+spring:
+  application:
+    name: consul-provider-payment
+  cloud:
+    consul:
+      host: http://192.168.31.22  #自己的服务器地址
+      port: 8500
+      discovery:
+        service-name: ${spring.application.name}
+        prefer-ip-address: true #当环境不支持以localhost访问时配置
