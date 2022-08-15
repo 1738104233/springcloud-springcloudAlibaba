@@ -1,0 +1,26 @@
+server:
+  port: 84
+
+spring:
+  application:
+    name: nacos-order-consumer
+  cloud:
+    nacos:
+      discovery:
+        #server-addr: localhost:8848 #配置nacos地址
+        #换成nginx的1111端口,做集群
+        server-addr: 192.168.31.22:1111 #配置nacos地址
+    sentinel:
+      transport:
+        dashboard: localhost:8080 #sentinel控制台地址
+        #sentinel后台监控服务要使用的端口号
+        port: 8719 #默认8719，假如被占用了会自动从8719开始依次+1扫描。直至找到未被占用的端口
+
+#消费者访问的微服务名称(成功注册进nacos的微服务生产者)
+service-url:
+  nacos-user-service: http://nacos-payment-provider
+
+#对Feign的支持
+feign:
+  sentinel:
+    enabled: true

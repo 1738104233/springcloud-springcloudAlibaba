@@ -1,0 +1,44 @@
+server:
+  port: 2002
+
+spring:
+  application:
+    name: seata-storage-service
+  cloud:
+    alibaba:
+      seata:
+        #自定义事务组名称需要与seata-server中的对应
+        tx-service-group: cloud_tx_group
+    nacos:
+      discovery:
+        server-addr: localhost:8848 #配置nacos地址
+        #换成nginx的1111端口,做集群
+        #server-addr: 192.168.31.22:1111 #配置nacos地址
+
+
+  datasource:
+    #数据库驱动
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver #org.gjt.mm.mysql.Driver  com.mysql.jdbc.Driver
+    #数据源名称
+    name: defaultDataSource
+    #数据库连接地址 本地 localhost 服务器 192.168.31.22
+    url: jdbc:mysql://localhost:3306/seata_storage?useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=true&amp;serverTimezone=Asia/Shanghai
+    #数据库用户名&密码    本地 root 服务器 chen
+    username: root
+    password: 123456
+
+mybatis:
+  #配置mybatis扫描路径
+  mapper-locations: classpath:mapper/*.xml
+  #指定Mybatis的实体类目录
+  type-aliases-package: com.cl.springcloudalibaba.pojo
+
+feign:
+  hystrix:
+    enabled: false
+
+logging:
+  level:
+    io:
+      seata: info
