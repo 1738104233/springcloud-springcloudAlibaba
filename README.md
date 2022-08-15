@@ -1,0 +1,111 @@
+# springcloud-springcloudAlibaba
+
+#### 介绍
+提供了spring cloud + spring cloud Alibaba技术体系效果演示
+
+#### 软件架构
+spring cloud + spring cloud Alibaba
+
+
+#### 安装教程
+
+git clone xxx
+
+zookeeper、nacos、sentinel等需自行安装
+
+#### 使用说明
+
+
+- 主pom结构选择：
+-    dependencies和dependencyManagement的区别：
+-   1. dependencies： 子项目中不配置也会自动继承此依赖和依赖的版本，可以直接使用
+-   2. dependencyManagement： 子项目不会继承此依赖和依赖版本，如果子项目需要使用此依赖，
+-    要在子项目中进行配置，此时可以省略版本号配置，使用父项目中配置的版本号
+-    (即不用写groupId和version，先在父pom寻找，再到子类找，如果子类没有声明则引用父pom，子类声明了则以子类为准)
+- 
+- 
+- 子项目说明：
+- cloud-api-commons:自己封装的pojo打包成jar,放到你自己的maven仓库里作为依赖在其他子项目引入使用
+- SQL:mysql-files
+- 
+- ##########################  springcloud ##########################
+- 分布式中的CAP理论：AP(Eureka),CP(Zookeeper/Consul)
+- 
+- (注册中心集群大同小异，模仿eureka写的配置即可)
+- ----eureka有自我保护机制----
+- cloud-eureka-server7001:eureka注册中心（有集群、单机两种配置）
+- cloud-eureka-server7002:eureka注册中心（有集群、单机两种配置）
+- cloud-consumer-order80:消费者,使用eureka作为注册中心,client,（有集群、单机两种配置,消费者可不注册到注册中心）
+- cloud-provider-payment8001:生产者,使用eureka作为注册中心,server（有集群、单机两种配置）
+- cloud-provider-payment8002:生产者,使用eureka作为注册中心,server（有集群、单机两种配置）
+- 
+- ----zookeeper服务节点是临时节点----
+- cloud-consumerzk-order80:消费者,使用zookeeper作为注册中心
+- cloud-provider-payment8004:生产者,使用zookeeper作为注册中心
+- 
+- ----consul有图形化界面 http://ip:8500----
+- cloud-consumerconsul-order80:消费者,使用consul作为注册中心
+- cloud-providerconsul-payment8006:生产者,使用consul作为注册中心
+- 
+- ----ribbon 负载均衡+restTemplate调用----
+- cloud-consumer-order80:消费者（有手写负载均衡轮询算法）
+- cloud-provider-payment8001:生产者
+- cloud-provider-payment8002:生产者
+- 
+- ----openFeign = ribbon+hystrix 注解形式,集成并简化了ribbon,自带负载均衡,用在消费端----
+- cloud-consumer-feign-order80:消费者（有超时控制、日志功能增强）
+- cloud-provider-payment8001:生产者
+- cloud-provider-payment8002:生产者
+- 
+- ----hystrix ----
+- cloud-consumer-feign-hystrix-order80:openFeign使用hystrix（配置远程调用fallback）
+- cloud-provider-hystrix-payment8001:服务降级,服务熔断（有全局降级）
+- cloud-consumer-hystrix-dashboard9001:仪表盘监控(访问:http://localhost:9001/hystrix)
+- 
+- ----geteWay ----
+- cloud-gateway-gateway9527:网关,使用eureka作为注册中心(route(路由),predicate(断言),filter(过滤))
+- 
+- ----config 使用github....等挂载配置文件----
+- #运维发送curl -X POST "http://localhost:3355/actuator/refresh"动态刷新客户端
+- cloud-config-center-3344:config服务端配置
+- cloud-config-client-3355:config客户端配置(client动态刷新)
+- 
+- ----springCloudBus 支持两种消息代理：RabbitMQ和Kafka----
+- #本项目使用的rabbitMQ,运维发送curl -X POST "http://localhost:3344/actuator/bus-refresh"即可动态刷新全部客户端(全局广播)
+- cloud-config-center-3344:服务端
+- cloud-config-client-3355:客户端
+- cloud-config-client-3377:客户端
+- 
+- ----stream 使用RabbitMQ----
+- cloud-stream-rabbitmq-provider8801:生产者
+- cloud-stream-rabbitmq-consumer8802:消费者(有分组消费和消息持久化)
+- cloud-stream-rabbitmq-consumer8803:消费者(有分组消费和消息持久化)
+- 
+- ----Sleuth 需要下载zipkin: https://repo1.maven.org/maven2/io/zipkin/zipkin-server/----
+- cloud-consumer-order80:消费者
+- cloud-provider-payment8001:生产者
+- 
+- ##########################  springcloud Alibaba ##########################
+- 
+- ----nacos 支持AP,支持CP,可以互相切换(CAP这三个是不能同时存在的)----
+- nacos为什么支持负载均衡：旧版jar包自带了ribbon,新版需要自己整合,或者使用openFeign
+- cloudalibaba-provider-payment9001:生产者 (nacos作为服务注册中心)
+- cloudalibaba-provider-payment9002:生产者 (nacos作为服务注册中心,有注册到集群)
+- cloudalibaba-consumer-nacos-order83:消费者 (nacos作为服务注册中心)
+- cloudalibaba-config-nacos-client3377:nacos作为服务配置中心
+- nacos持久化:nacos默认自带的嵌入式数据库derby切换成mysql
+- nacos集群:1个nginx+3个nacos注册中心+1个mysql
+- 
+- ----sentinel 控制台:http://localhost:8080----
+- cloudalibaba-sentinel-service8401:sentinel演示(流控、降级、热点、系统...控制台配置搭配api使用,有sentinel持久化规则到nacos)
+- cloudalibaba-provider-payment9003:生产者
+- cloudalibaba-provider-payment9004:生产者
+- cloudalibaba-consumer-nacos-order84:消费者(自定义兜底返回,有ribbon版、openFeign版)
+- 
+- ----seata ----
+- seata分布式事务解决方案,三个数据库演示:
+- seata-order-service2001
+- seata-order-service2002
+- seata-order-service2003
+
+
